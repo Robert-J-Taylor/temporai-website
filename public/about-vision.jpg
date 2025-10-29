@@ -1,0 +1,8 @@
+<!-- This is a placeholder for the vision image. Replace with actual JPG -->
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#6CB3E3"/>
+  <rect x="100" y="100" width="600" height="400" rx="20" fill="rgba(255,255,255,0.1)"/>
+  <text x="400" y="280" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" font-weight="600" fill="white">Vision &amp; Values</text>
+  <text x="400" y="310" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" fill="white">Collaboration &amp; Innovation</text>
+  <text x="400" y="340" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="white">Replace with actual image</text>
+</svg>

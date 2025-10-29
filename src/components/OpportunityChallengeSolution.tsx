@@ -243,7 +243,7 @@ export default function OpportunityChallengeSolution() {
                     <div className="pl-8">
                       <div className="flex items-baseline gap-2 mb-3">
                         <span className="text-5xl font-bold text-white">$11T</span>
-                        <span className="text-lg text-white font-medium">crypto market (projected 2030)</span>
+                        <span className="text-lg text-white font-medium">(projected 2030)</span>
                       </div>
                       <p className="text-white/80 mb-3">2x growth from today&apos;s market cap</p>
                       <p className="text-white/70 text-sm leading-relaxed">
@@ -259,7 +259,7 @@ export default function OpportunityChallengeSolution() {
                     <div className="pl-8">
                       <div className="flex items-baseline gap-2 mb-3">
                         <span className="text-5xl font-bold text-white">$3.7T</span>
-                        <span className="text-lg text-white font-medium">stablecoin market (projected 2030)</span>
+                        <span className="text-lg text-white font-medium">(projected 2030)</span>
                       </div>
                       <p className="text-white/80 mb-3">15x explosive growth opportunity</p>
                       <p className="text-white/70 text-sm leading-relaxed">
@@ -497,7 +497,7 @@ export default function OpportunityChallengeSolution() {
                   <div className="space-y-8">
                     {/* Multi-Chain Chaos */}
                     <div className="relative p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-[#6cb3e3]/20">
-                      <div className="absolute -left-4 top-6 w-1 h-16 bg-gradient-to-b from-[#6cb3e3] to-[#6cb3e3]/50 rounded-full"></div>
+                      <div className="absolute -left-4 top-6 w-1 h-16 bg-gradient-to-b from-[#6cb3e3]/60 to-[#6cb3e3]/30 rounded-full"></div>
                       <div className="pl-8">
                         <div className="flex items-baseline gap-2 mb-3">
                           <span className="text-4xl font-bold text-black">Network</span>
@@ -509,7 +509,7 @@ export default function OpportunityChallengeSolution() {
 
                     {/* Exchange Sprawl */}
                     <div className="relative p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-[#9a84be]/30">
-                      <div className="absolute -left-4 top-6 w-1 h-16 bg-gradient-to-b from-[#9a84be] to-[#9a84be]/50 rounded-full"></div>
+                      <div className="absolute -left-4 top-6 w-1 h-16 bg-gradient-to-b from-[#9a84be]/60 to-[#9a84be]/30 rounded-full"></div>
                       <div className="pl-8">
                         <div className="flex items-baseline gap-2 mb-3">
                           <span className="text-4xl font-bold text-black">Exchange</span>
@@ -521,7 +521,7 @@ export default function OpportunityChallengeSolution() {
 
                     {/* Duplicate Network Chaos for better spacing */}
                     <div className="relative p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-[#6cb3e3]/20">
-                      <div className="absolute -left-4 top-6 w-1 h-16 bg-gradient-to-b from-[#6cb3e3] to-[#6cb3e3]/50 rounded-full"></div>
+                      <div className="absolute -left-4 top-6 w-1 h-16 bg-gradient-to-b from-[#6cb3e3]/60 to-[#6cb3e3]/30 rounded-full"></div>
                       <div className="pl-8">
                         <div className="flex items-baseline gap-2 mb-3">
                           <span className="text-4xl font-bold text-black">Network</span>

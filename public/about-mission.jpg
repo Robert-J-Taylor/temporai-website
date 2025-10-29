@@ -1,0 +1,7 @@
+<!-- This is a placeholder for the mission image. Replace with actual JPG -->
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#19B4A8"/>
+  <rect x="100" y="100" width="600" height="400" rx="20" fill="rgba(255,255,255,0.1)"/>
+  <text x="400" y="300" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" font-weight="600" fill="white">TemporAI Mission</text>
+  <text x="400" y="330" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" fill="white">Replace with actual image</text>
+</svg>

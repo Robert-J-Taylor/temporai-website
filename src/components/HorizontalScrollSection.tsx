@@ -9,8 +9,7 @@ interface HorizontalScrollSectionProps {
 
 export default function HorizontalScrollSection({ className = "" }: HorizontalScrollSectionProps) {
   const [currentSection, setCurrentSection] = useState(0);
-  const [touchStart, setTouchStart] = useState(0);
-  const [touchEnd, setTouchEnd] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const opsHeaderRef = useRef<HTMLDivElement>(null);
   const slides = ['Opportunity', 'Challenge', 'Solution'];
 
@@ -37,43 +36,74 @@ export default function HorizontalScrollSection({ className = "" }: HorizontalSc
     };
   }, []);
 
-  // Navigation functions
+  // Track scroll position to update current section
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft;
+      const containerWidth = container.clientWidth;
+      const slideWidth = containerWidth * 0.85; // Each slide is 85% of container
+      
+      // Calculate which slide is currently in view
+      let newSection = 0;
+      if (scrollLeft > slideWidth * 0.5) newSection = 1;
+      if (scrollLeft > slideWidth * 1.5) newSection = 2;
+      
+      setCurrentSection(newSection);
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Navigation functions using scroll
   const nextSlide = () => {
-    setCurrentSection((prev) => Math.min(prev + 1, slides.length - 1));
+    const container = scrollContainerRef.current;
+    if (!container || currentSection >= slides.length - 1) return;
+    
+    const containerWidth = container.clientWidth;
+    const slideWidth = containerWidth * 0.85;
+    container.scrollTo({
+      left: slideWidth * (currentSection + 1),
+      behavior: 'smooth'
+    });
   };
 
   const prevSlide = () => {
-    setCurrentSection((prev) => Math.max(prev - 1, 0));
+    const container = scrollContainerRef.current;
+    if (!container || currentSection <= 0) return;
+    
+    const containerWidth = container.clientWidth;
+    const slideWidth = containerWidth * 0.85;
+    container.scrollTo({
+      left: slideWidth * (currentSection - 1),
+      behavior: 'smooth'
+    });
   };
 
   const goToSlide = (index: number) => {
-    setCurrentSection(index);
-  };
-
-  // Swipe handlers
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
+    const container = scrollContainerRef.current;
+    if (!container) return;
     
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > 50;
-    const isRightSwipe = distance < -50;
+    const containerWidth = container.clientWidth;
+    const slideWidth = containerWidth * 0.85;
+    container.scrollTo({
+      left: slideWidth * index,
+      behavior: 'smooth'
+    });
+  };
 
-    if (isLeftSwipe) {
-      nextSlide();
-    } else if (isRightSwipe) {
+  // Keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
       prevSlide();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextSlide();
     }
-    
-    setTouchStart(0);
-    setTouchEnd(0);
   };
 
   const sections = [
@@ -87,13 +117,13 @@ export default function HorizontalScrollSection({ className = "" }: HorizontalSc
       borderColor: 'border-white/30',
       stats: [
         { 
-          label: 'Crypto Market', 
+          label: '', 
           value: '$11T',
           desc: 'crypto market (projected 2030)',
           paragraph: 'The total cryptocurrency market is expected to reach $11 trillion by 2030, driven by institutional adoption, regulatory clarity, and the growing demand for decentralized financial services.'
         },
         { 
-          label: 'Stablecoin Market', 
+          label: '', 
           value: '$2.8T',
           desc: 'stablecoin market (projected 2030)',
           paragraph: 'Stablecoins are projected to reach $2.8 trillion by 2030, becoming the primary medium for crypto transactions, payments, and DeFi protocols.'
@@ -171,27 +201,31 @@ export default function HorizontalScrollSection({ className = "" }: HorizontalSc
         </div>
       </div>
 
-      {/* Slideshow Container */}
+      {/* Horizontal Scroll Container */}
       <div 
-        className="relative overflow-hidden"
+        className="relative"
         style={{ height: 'calc(100vh - 70px)' }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="region"
+        aria-roledescription="carousel" 
+        aria-label="Opportunity Problem Solution slides"
       >
+        {/* Left edge gradient */}
+        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white via-white/70 to-transparent dark:from-neutral-950 dark:via-neutral-950/70 pointer-events-none z-10" />
+        
+        {/* Right edge gradient */}
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white via-white/70 to-transparent dark:from-neutral-950 dark:via-neutral-950/70 pointer-events-none z-10" />
+
         {/* Arrow Navigation */}
         {currentSection > 0 && (
           <button
             onClick={prevSlide}
-            className={`absolute left-4 top-1/2 -translate-y-1/2 z-50 backdrop-blur-sm rounded-full p-3 transition-all ${
-              currentSection === 1 
-                ? 'bg-gray-800/80 hover:bg-gray-800/90' 
-                : 'bg-white/20 hover:bg-white/30'
-            }`}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white hover:bg-gray-50 rounded-full p-4 shadow-lg border-2 border-gray-200 hover:border-[#19B4A8] transition-all duration-300 hover:scale-110 animate-pulse hover:animate-none group"
             aria-label="Previous slide"
           >
-            <svg className={`w-6 h-6 ${currentSection === 1 ? 'text-gray-800' : 'text-white'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg className="w-7 h-7 text-gray-800 group-hover:text-[#19B4A8] transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
         )}
@@ -199,29 +233,57 @@ export default function HorizontalScrollSection({ className = "" }: HorizontalSc
         {currentSection < slides.length - 1 && (
           <button
             onClick={nextSlide}
-            className={`absolute right-4 top-1/2 -translate-y-1/2 z-50 backdrop-blur-sm rounded-full p-3 transition-all ${
-              currentSection === 1 
-                ? 'bg-gray-800/80 hover:bg-gray-800/90' 
-                : 'bg-white/20 hover:bg-white/30'
+            className={`absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white hover:bg-gray-50 rounded-full p-4 shadow-lg border-2 border-gray-200 hover:border-[#19B4A8] transition-all duration-300 hover:scale-110 group ${
+              currentSection === 0 
+                ? 'animate-bounce hover:animate-none' 
+                : 'animate-pulse hover:animate-none'
             }`}
             aria-label="Next slide"
           >
-            <svg className={`w-6 h-6 ${currentSection === 1 ? 'text-gray-800' : 'text-white'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg className="w-7 h-7 text-gray-800 group-hover:text-[#19B4A8] transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
             </svg>
           </button>
         )}
 
-        {/* Slides Wrapper */}
+        {/* Horizontal Scroll Container */}
         <div 
-          className="flex h-full transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${currentSection * 100}%)` }}
+          ref={scrollContainerRef}
+          className="flex h-full overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory scrollbar-hide"
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            WebkitOverflowScrolling: 'touch'
+          }}
         >
-          {sections.map((section, index) => (
-            <div 
-              key={section.id}
-              className={`w-full h-full flex items-center justify-center px-4 sm:px-6 lg:px-8 flex-shrink-0 ${section.bg} relative overflow-hidden`}
-            >
+          {sections.map((section, index) => {
+            // Configure snap alignment and width for peek effect
+            let snapAlign, slideWidth, marginConfig;
+            
+            if (index === 0) {
+              // First slide: 85% width, snap-start, 15% peek right
+              snapAlign = 'snap-start';
+              slideWidth = 'w-[85vw]';
+              marginConfig = 'mr-0';
+            } else if (index === 1) {
+              // Middle slide: 85% width, snap-center, 7.5% peek on each side  
+              snapAlign = 'snap-center';
+              slideWidth = 'w-[85vw]';
+              marginConfig = 'mx-0';
+            } else {
+              // Last slide: 85% width, snap-end, 15% peek left
+              snapAlign = 'snap-end';
+              slideWidth = 'w-[85vw]';
+              marginConfig = 'ml-0';
+            }
+            
+            return (
+              <article 
+                key={section.id}
+                className={`${slideWidth} ${snapAlign} ${marginConfig} h-full flex items-center justify-center px-4 sm:px-6 lg:px-8 flex-shrink-0 ${section.bg} relative overflow-hidden`}
+                aria-roledescription="slide"
+                aria-label={`${section.title} (${index + 1} of ${sections.length})`}
+              >
               {/* Decorative crypto icons for challenge section */}
               {index === 1 && (
                 <>
@@ -333,9 +395,10 @@ export default function HorizontalScrollSection({ className = "" }: HorizontalSc
                   )}
                 </div>
               </div>
-            </div>
-          ))}
-              </div>
+              </article>
+            );
+          })}
+        </div>
               
         {/* Slide Indicators */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-2 z-50">
@@ -350,6 +413,17 @@ export default function HorizontalScrollSection({ className = "" }: HorizontalSc
             />
           ))}
         </div>
+
+        {/* Hide scrollbars */}
+        <style jsx>{`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `}</style>
       </div>
     </div>
   );

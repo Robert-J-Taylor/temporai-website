@@ -128,7 +128,7 @@ export default function AutoSlideshow({ slides, className = "" }: AutoSlideshowP
 
     intervalRef.current = setInterval(() => {
       next();
-    }, 5000);
+    }, 4000);
 
     return () => {
       if (intervalRef.current) {
@@ -159,16 +159,20 @@ export default function AutoSlideshow({ slides, className = "" }: AutoSlideshowP
   const onTransitionEnd = () => {
     if (vIndex === 0) {
       // We moved onto the head clone (last). Snap to real last (N-1) at vIndex=N
-      setIsAnimating(false);
-      setRealIndex(N - 1);
-      setVIndex(N); // snap target (no animation)
-      requestAnimationFrame(() => setIsAnimating(true));
+      setTimeout(() => {
+        setIsAnimating(false);
+        setRealIndex(N - 1);
+        setVIndex(N); // snap target (no animation)
+        setTimeout(() => setIsAnimating(true), 10);
+      }, 10);
     } else if (vIndex === N + 1) {
       // We moved onto the tail clone (first). Snap to real first (0) at vIndex=1
-      setIsAnimating(false);
-      setRealIndex(0);
-      setVIndex(1);
-      requestAnimationFrame(() => setIsAnimating(true));
+      setTimeout(() => {
+        setIsAnimating(false);
+        setRealIndex(0);
+        setVIndex(1);
+        setTimeout(() => setIsAnimating(true), 10);
+      }, 10);
     } else {
       // Normal slide: update real index from visual index
       setRealIndex(vIndex - 1);
@@ -218,7 +222,7 @@ export default function AutoSlideshow({ slides, className = "" }: AutoSlideshowP
           to { width: 100%; }
         }
         .progress-bar {
-          animation: progress 5000ms linear forwards;
+          animation: progress 4000ms linear forwards;
         }
       `}</style>
       
@@ -234,7 +238,7 @@ export default function AutoSlideshow({ slides, className = "" }: AutoSlideshowP
         <div 
           ref={railRef}
           className={`absolute inset-0 flex items-stretch gap-3 sm:gap-4 lg:gap-6 ${
-            isAnimating ? "transition-transform duration-700 ease-out" : ""
+            isAnimating ? "transition-transform duration-500 ease-in-out" : ""
           }`}
           style={{ transform: `translateX(${translateX}px)` }}
           onTransitionEnd={onTransitionEnd}
@@ -280,7 +284,7 @@ export default function AutoSlideshow({ slides, className = "" }: AutoSlideshowP
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 
                 {/* Content overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 lg:p-12">
+                <div className="absolute bottom-[15px] left-0 right-0 p-6 sm:p-8 lg:p-12">
                   <div className="max-w-4xl">
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-white mb-4 leading-tight">
                       {slide.title}
@@ -306,8 +310,8 @@ export default function AutoSlideshow({ slides, className = "" }: AutoSlideshowP
                   </div>
                 </div>
 
-                {/* Progress bar for active slide */}
-                {dist === 0 && !prefersReducedMotion && (
+                {/* Progress bar for active slide - Hidden to prevent visual artifacts */}
+                {/* {dist === 0 && !prefersReducedMotion && (
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20">
                     <div
                       ref={progressRef}
@@ -315,7 +319,7 @@ export default function AutoSlideshow({ slides, className = "" }: AutoSlideshowP
                       style={{ width: isPaused ? '0%' : '100%' }}
                     />
                   </div>
-                )}
+                )} */}
               </div>
               </article>
             );
